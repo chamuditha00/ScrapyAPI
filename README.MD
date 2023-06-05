@@ -12,7 +12,7 @@ This project includes two main components: web scraping Amazon product data and 
 1. Clone the repository:
 
    
-   git clone https://github.com/chamuditha00/ScrapyAPi.git
+   git clone https://github.com/chamuditha00/ScrapyAPI.git
 
 
 ## project description
