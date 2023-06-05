@@ -1,0 +1,10 @@
+{
+    "sqltools.connections": [
+        {
+            "previewLimit": 500,
+            "driver": "SQLite",
+            "name": "amazondb",
+            "database": "${workspaceFolder:ScrapyAPi}/amazon_data.db"
+        }
+    ]
+}
