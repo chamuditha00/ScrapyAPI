@@ -85,7 +85,7 @@ def get_image_url(soup):
 
 if __name__ == '__main__':
 
-    # add your user agent 
+    # add your user agent  put your agent when use it
     HEADERS = ({'User-Agent':'', 'Accept-Language': 'en-US, en;q=0.5'})
 
     d = {"title":[], "price":[], "rating":[], "reviews":[],"availability":[], "link":[], "image_url":[]}
