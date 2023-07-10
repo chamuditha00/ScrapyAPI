@@ -7,6 +7,7 @@ def run_scraping_script():
         subprocess.run(["python", "scrapy_perfume.py"])
         subprocess.run(["python", "scrapy_sunCream.py"])
         subprocess.run(["python", "scrapy_watch.py"])
+        subprocess.run(["python", "rank_data.py"])
     except subprocess.CalledProcessError as e:
         print("An error occurred:", e)
 
@@ -17,5 +18,5 @@ run_scraping_script()
 subprocess.Popen(["python", "flaskapi.py"])
 
 # Wait for 24 hours
-time.sleep(24*60*60)
+time.sleep(60)
 print("started")

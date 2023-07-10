@@ -88,7 +88,7 @@ if __name__ == '__main__':
     # add your user agent  put your agent when use it
     HEADERS = ({'User-Agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36 Edg/114.0.1823.37', 'Accept-Language': 'en-US, en;q=0.5'})
 
-    d = {"title":[], "price":[], "rating":[], "reviews":[],"availability":[], "link":[], "image_url":[]}
+    d = {"title":[], "price":[], "rating":[], "reviews":[],"availability":[], "link":[], "image_url":[], "category":"perfume"}
 
     # Store the links
     links_list = []

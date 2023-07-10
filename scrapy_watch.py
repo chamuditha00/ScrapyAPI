@@ -89,10 +89,10 @@ if __name__ == '__main__':
     # add your user agent  put your agent when use it
     HEADERS = ({'User-Agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36 Edg/114.0.1823.37', 'Accept-Language': 'en-US, en;q=0.5'})
 
-    d = {"title":[], "price":[], "rating":[], "reviews":[],"availability":[], "link":[], "image_url":[]}
+    d = {"title":[], "price":[], "rating":[], "reviews":[],"availability":[], "link":[], "image_url":[],"category":"watch"}
 
     # The webpage URL
-    for i in range(1,6):
+    for i in range(1,3):
         print("done done watch")
         URL = f"https://us.amazon.com/s?k=watch&crid=3D72CH8G1PIYQ&qid=1686149044&sprefix=watc%2Caps%2C427&ref=sr_pg_{i}"
         # HTTP Request
@@ -137,7 +137,7 @@ if __name__ == '__main__':
             print("done")
             print("watch" + str(i) + "done")
             i+=1
-            if i>35:
+            if i>6:
                 print(d)
                 i = 0
                 break

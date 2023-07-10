@@ -6,9 +6,9 @@ app = Flask(__name__)
 
 @app.route('/app', methods=['GET'])
 def get_data():
-    conn = sqlite3.connect('amazon_data.db')
+    conn = sqlite3.connect('amazon_rank.db')
     cursor = conn.cursor()
-    cursor.execute("SELECT * FROM amazon_data")
+    cursor.execute("SELECT * FROM amazon_ranked")
     columns = [description[0] for description in cursor.description]  # Get column names
     data = cursor.fetchall()
     result = []
@@ -20,25 +20,25 @@ def get_data():
 @app.route('/app/<string:title>', methods=['GET'])
 
 def get_data_by_title(title):
-    conn = sqlite3.connect('amazon_data.db')
+    conn = sqlite3.connect('amazon_rank.db')
     cursor = conn.cursor()
-    data = cursor.execute("SELECT * FROM amazon_data WHERE title=?",(title,)).fetchall()
+    data = cursor.execute("SELECT * FROM amazon_data WHERE title=? ORDER BY rank LIMIT 10", (title,)).fetchall()
     return jsonify({'data':data})
 
 @app.route('/app/<string:price>', methods=['GET'])
 
 def get_data_by_price(price):
-    conn = sqlite3.connect('amazon_data.db')
+    conn = sqlite3.connect('amazon_rank.db')
     cursor = conn.cursor()
-    data = cursor.execute("SELECT * FROM amazon_data WHERE price=?",(price,)).fetchall()
+    data = cursor.execute("SELECT * FROM amazon_data WHERE price=? ORDER BY rank LIMIT 10",(price,)).fetchall()
     return jsonify({'data':data})
 
 @app.route('/app/<int:id>', methods=['GET'])
 
 def get_data_by_id(id):
-    conn = sqlite3.connect('amazon_data.db')
+    conn = sqlite3.connect('amazon_rank.db')
     cursor = conn.cursor()
-    data = cursor.execute("SELECT * FROM amazon_data WHERE id=?",(id,)).fetchall()
+    data = cursor.execute("SELECT * FROM amazon_data WHERE id=? ORDER BY rank LIMIT 10",(id,)).fetchall()
     return jsonify({'data':data})
 
 
