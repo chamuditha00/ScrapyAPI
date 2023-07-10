@@ -53,6 +53,7 @@ def get_rating(soup):
 
     return rating
 
+
 # Function to extract Number of User Reviews
 def get_review_count(soup):
     try:
@@ -86,12 +87,12 @@ def get_image_url(soup):
 if __name__ == '__main__':
 
     # add your user agent  put your agent when use it
-    HEADERS = ({'User-Agent':'', 'Accept-Language': 'en-US, en;q=0.5'})
+    HEADERS = ({'User-Agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36 Edg/114.0.1823.37', 'Accept-Language': 'en-US, en;q=0.5'})
 
     d = {"title":[], "price":[], "rating":[], "reviews":[],"availability":[], "link":[], "image_url":[]}
 
     # The webpage URL
-    for i in range(1,7):
+    for i in range(1,2):
         print("done done")
         URL = f"https://us.amazon.com/s?k=sunscreen&page=2&crid=BCICLEMKVXND&qid=1685899503&sprefix=suns%2Caps%2C533&ref=sr_pg_{i}"
         # HTTP Request
@@ -136,7 +137,7 @@ if __name__ == '__main__':
             d['image_url'].append(get_image_url(new_soup))
             print("done")
             i+=1
-            if i>40:
+            if i>5:
                 print(d)
                 break
 
@@ -148,18 +149,18 @@ if __name__ == '__main__':
     amazon_df['title'].replace('', np.nan, inplace=True)
     amazon_df = amazon_df.dropna(subset=['title'])
     #save to csv
-    amazon_df.to_csv("amazon_data.csv", header=True, index=False)
+    amazon_df.to_csv("amazon_sunCream.csv", header=True, index=False)
     if(amazon_df.empty):
         print("empty")
     else:
         #READ CSV
-        df = pd.read_csv('amazon_data.csv')
+        df = pd.read_csv('amazon_sunCream.csv')
         #remove white space from column names
         df.columns = df.columns.str.strip()
         #create database
         conn =  sqlite3.connect("amazon_data.db")
         #create table
-        df.to_sql("amazon_data", conn, if_exists='replace')
+        df.to_sql("amazon_data", conn, if_exists='append')
         #close connection
         conn.close()
         
