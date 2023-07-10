@@ -92,8 +92,8 @@ if __name__ == '__main__':
     d = {"title":[], "price":[], "rating":[], "reviews":[],"availability":[], "link":[], "image_url":[]}
 
     # The webpage URL
-    for i in range(1,2):
-        print("done done")
+    for i in range(1,6):
+        print("done done watch")
         URL = f"https://us.amazon.com/s?k=watch&crid=3D72CH8G1PIYQ&qid=1686149044&sprefix=watc%2Caps%2C427&ref=sr_pg_{i}"
         # HTTP Request
         webpage = requests.get(URL, headers=HEADERS)
@@ -106,7 +106,6 @@ if __name__ == '__main__':
         
         # Store the links
         links_list = []
-        i = 0
         # Loop for extracting links from Tag Objects
         for link in links:
                 links_list.append(link.get('href'))
@@ -136,9 +135,11 @@ if __name__ == '__main__':
             print("done")
             d['image_url'].append(get_image_url(new_soup))
             print("done")
+            print("watch" + str(i) + "done")
             i+=1
-            if i>5:
+            if i>35:
                 print(d)
+                i = 0
                 break
 
 

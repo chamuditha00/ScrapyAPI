@@ -90,9 +90,13 @@ if __name__ == '__main__':
 
     d = {"title":[], "price":[], "rating":[], "reviews":[],"availability":[], "link":[], "image_url":[]}
 
+    # Store the links
+    links_list = []
+    
+
     # The webpage URL
-    for i in range(1,2):
-        print("done done")
+    for i in range(1,4):
+        print("done done perfume")
         URL = f"https://us.amazon.com/s?k=perfume&i=beauty-intl-ship&qid=1686147696&ref=sr_pg_{i}"
         # HTTP Request
         webpage = requests.get(URL, headers=HEADERS)
@@ -103,9 +107,6 @@ if __name__ == '__main__':
         # Fetch links as List of Tag Objects
         links = soup.find_all("a", attrs={'class':'a-link-normal s-no-outline'})
         
-        # Store the links
-        links_list = []
-        i = 0
         # Loop for extracting links from Tag Objects
         for link in links:
                 links_list.append(link.get('href'))
@@ -135,9 +136,11 @@ if __name__ == '__main__':
             print("done")
             d['image_url'].append(get_image_url(new_soup))
             print("done")
+            print("perfume" + str(i) + "done")
             i+=1
-            if i>5:
+            if i>35:
                 print(d)
+                i = 0
                 break
 
 
