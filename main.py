@@ -2,9 +2,11 @@ import subprocess
 import time
 
 # Function to run the scraping script
-def run_scraping_script(script_name):
+def run_scraping_script():
     try:
-         subprocess.Popen(["python", script_name])
+        subprocess.run(["python", "scrapy_perfume.py"])
+        subprocess.run(["python", "scrapy_sunCream.py"])
+        subprocess.run(["python", "scrapy_watch.py"])
     except subprocess.CalledProcessError as e:
         print("An error occurred:", e)
 
@@ -32,5 +34,5 @@ while True:
         is_running = False
 
     # Wait for 24 hours
-    time.sleep(1)
+    time.sleep(24*60*60)
     print("started")
