@@ -8,7 +8,7 @@ def rank_item_category():
 
     cursor.execute("SELECT DISTINCT category FROM amazon_data")
     categories = cursor.fetchall()
-    d = {"title":[], "price":[], "rating":[], "reviews":[],"availability":[], "link":[], "image_url":[], "category":[], "rank":[]}
+    d = {"title":[], "price":[], "rating":[], "reviews":[],"availability":[], "link":[], "image_url":[], "category":[], "rank":[],"website":"amazon"}
 
     for category in categories:
         category = category[0]  # Extract the category from the tuple

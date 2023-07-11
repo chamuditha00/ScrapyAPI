@@ -92,7 +92,7 @@ if __name__ == '__main__':
     d = {"title":[], "price":[], "rating":[], "reviews":[],"availability":[], "link":[], "image_url":[],"category":"watch"}
 
     # The webpage URL
-    for i in range(1,3):
+    for i in range(1,4):
         print("done done watch")
         URL = f"https://us.amazon.com/s?k=watch&crid=3D72CH8G1PIYQ&qid=1686149044&sprefix=watc%2Caps%2C427&ref=sr_pg_{i}"
         # HTTP Request
@@ -100,6 +100,7 @@ if __name__ == '__main__':
 
         # Soup Object containing all data
         soup = BeautifulSoup(webpage.content, "html.parser")
+        print(soup)
 
         # Fetch links as List of Tag Objects
         links = soup.find_all("a", attrs={'class':'a-link-normal s-no-outline'})
