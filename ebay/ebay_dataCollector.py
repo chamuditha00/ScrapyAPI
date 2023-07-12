@@ -1,41 +1,168 @@
+from bs4 import BeautifulSoup
 import requests
-import csv
+import pandas as pd
+import numpy as np
+import sqlite3
 
-# eBay API endpoint and parameters
-url = 'https://api.ebay.com/buy/browse/v1/item_summary/search'
-headers = {
-    'Authorization': 'Bearer YOUR_ACCESS_TOKEN',
-    'Content-Type': 'application/json',
-}
-params = {
-    'q': 'your_search_query',
-    'limit': 100,  # Number of items to fetch
-    'sort': 'price'  # Sort by price in ascending order
-}
+#function to get the title of the product
+def get_title(soup):
 
-# Send GET request to eBay API
-response = requests.get(url, headers=headers, params=params)
-data = response.json()
+    try:
+        # Outer Tag Object
+        title = soup.find("span", attrs={"class":'ux-textspans ux-textspans--BOLD'})
+        
+        # Inner NavigatableString Object
+        title_value = title.text
 
-# Extract relevant data from the response
-items = data['itemSummaries']
+        # Title as a string value
+        title_string = title_value.strip()
 
-# Create CSV file and write data
-filename = 'ebay_data.csv'
-with open(filename, 'w', newline='', encoding='utf-8') as csvfile:
-    writer = csv.writer(csvfile)
+    except AttributeError:
+        title_string = ""
 
-    # Write header row
-    writer.writerow(['Title', 'Price', 'Rating', 'Reviews', 'Image URL', 'Link'])
+    return title_string
 
-    # Write data rows
-    for item in items:
-        title = item['title']
-        price = item['price']['value']
-        rating = item['seller']['feedbackPercentage']
-        reviews = item['seller']['feedbackScore']
-        image_url = item['image']['imageUrl']
-        link = item['itemWebUrl']
-        writer.writerow([title, price, rating, reviews, image_url, link])
+# Function to extract Product Price
+def get_price(soup):
 
-print(f'Data saved to {filename}.')
+    try:
+        price = soup.find("span", attrs={'class':'ux-textspans'}).string.strip()
+
+    except AttributeError:
+
+        try:
+            # If there is some deal price
+            price = soup.find("span", attrs={'class':'a-offscreen'}).string.strip()
+
+        except:
+            price = ""
+
+    return price
+
+# Function to extract Product Rating
+def get_rating(soup):
+
+    try:
+        rating = soup.find("span", attrs={'class':'prodreview vi-VR-prodRev'}).string.strip()
+    except:
+        rating = ""	
+
+    return rating
+
+
+# Function to extract Number of User Reviews
+def get_review_count(soup):
+    try:
+        review_count = soup.find("span", attrs={'id':'acrCustomerReviewText'}).string.strip()
+
+    except AttributeError:
+        review_count = ""	
+
+    return review_count
+
+# Function to extract Availability Status
+def get_availability(soup):
+    try:
+        available = soup.find("div", attrs={'id':'availability'})
+        available = available.find("span").string.strip()
+
+    except AttributeError:
+        available = "Not Available"	
+
+    return available
+
+# Function to extract product image URL
+def get_image_url(soup):
+    try:
+        image = soup.find("div", attrs={'id': 'imgTagWrapperId'})
+        image_url = image.find("img")["src"]
+    except AttributeError:
+        image_url = ""
+    return image_url
+
+if __name__ == '__main__':
+
+    # add your user agent  put your agent when use it
+    HEADERS = ({'User-Agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36 Edg/114.0.1823.37', 'Accept-Language': 'en-US, en;q=0.5'})
+
+    d = {"title":[], "price":[], "rating":[], "reviews":[],"availability":[], "link":[], "image_url":[],"category":"watch"}
+
+    # The webpage URL
+    for i in range(1,4):
+        print("done done sun Cream")
+        URL = f"https://www.ebay.com/sch/i.html?_from=R40&_nkw=sun+cream&_sacat=0&LH_TitleDesc=0&_pgn={i}"
+        # HTTP Request
+        webpage = requests.get(URL, headers=HEADERS)
+
+        # Soup Object containing all data
+        soup = BeautifulSoup(webpage.content, "html.parser")
+
+        # Fetch links as List of Tag Objects
+        links = soup.find_all("a", attrs={'class':'s-item__link'})
+        review_links = soup.find_all("a", attrs={'class':'s-item__reviews-link'})
+
+        print(links)
+        
+        # Store the links
+        links_list = []
+        review_links_list = []
+        # Loop for extracting links from Tag Objects
+        for link in links:
+            for review_link in review_links:
+                review_links_list.append(review_link.get('href'))
+                links_list.append(link.get('href'))
+                
+                
+        
+        
+        # Loop for extracting product details from each link 
+        for link in links_list:
+        
+            new_webpage = requests.get("https://www.amazon.com" + link, headers=HEADERS)
+
+            new_soup = BeautifulSoup(new_webpage.content, "html.parser")
+            # Function calls to display all necessary product information
+            d['title'].append(get_title(new_soup))
+            print("done")
+            d['price'].append(get_price(new_soup))
+            print("done")
+            d['rating'].append(get_rating(new_soup))
+            print("done")
+            d['reviews'].append(get_review_count(new_soup))
+            print("done")
+            d['availability'].append(get_availability(new_soup))
+            print("done")
+            d['link'].append("https://www.amazon.com" + link)
+            print("done")
+            d['image_url'].append(get_image_url(new_soup))
+            print("done")
+            print("watch" + str(i) + "done")
+            i+=1
+            if i>6:
+                print(d)
+                i = 0
+                break
+
+
+
+    #create dataframe
+    amazon_df = pd.DataFrame.from_dict(d)
+    #drop empty rows
+    amazon_df['title'].replace('', np.nan, inplace=True)
+    amazon_df = amazon_df.dropna(subset=['title'])
+    #save to csv
+    amazon_df.to_csv("amazon_watch.csv", header=True, index=False)
+    if(amazon_df.empty):
+        print("empty")
+    else:
+        #READ CSV
+        df = pd.read_csv('amazon_watch.csv')
+        #remove white space from column names
+        df.columns = df.columns.str.strip()
+        #create database
+        conn =  sqlite3.connect("amazon_data.db")
+        #create table
+        df.to_sql("amazon_data", conn, if_exists='append')
+        #close connection
+        conn.close()
+        

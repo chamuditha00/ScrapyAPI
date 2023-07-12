@@ -42,7 +42,8 @@ if __name__ == '__main__':
         soup = BeautifulSoup(webpage.content, "html.parser")
 
         # Fetch links as List of Tag Objects
-        links = soup.find_all("a", attrs={'class':'a-link-normal s-no-outline'})
+        links = soup.find_all("div", attrs={'class':''})
+    
         
         # Store the links
         links_list = []
@@ -52,6 +53,7 @@ if __name__ == '__main__':
                 print("done done suncream")
                 links_list.append(link.get('href'))
                 print(link.get('href'))
+                
                 
                 
         

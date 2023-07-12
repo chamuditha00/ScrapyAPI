@@ -53,6 +53,15 @@ def get_rating(soup):
 
     return rating
 
+#function to get href of the product
+def get_href(link):
+    try:
+        Href  = link.get('href')
+        new_href = Href.replace("//www.aliexpress.com", "")
+        return new_href
+    except AttributeError:
+        href = ""
+
 
 # Function to extract Number of User Reviews
 def get_review_count(soup):
@@ -89,12 +98,11 @@ if __name__ == '__main__':
     # add your user agent  put your agent when use it
     HEADERS = ({'User-Agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36 Edg/114.0.1823.37', 'Accept-Language': 'en-US, en;q=0.5'})
 
-    d = {"title":[], "price":[], "rating":[], "reviews":[],"availability":[], "link":[], "image_url":[],"category":"watch"}
+    d = {"title":[], "price":[], "rating":[], "reviews":[],"availability":[], "link":[], "image_url":[],"category": "sunscreen"}
 
     # The webpage URL
-    for i in range(1,4):
-        print("done done watch")
-        URL = f"https://us.amazon.com/s?k=watch&crid=3D72CH8G1PIYQ&qid=1686149044&sprefix=watc%2Caps%2C427&ref=sr_pg_{i}"
+    for i in range(1,6):
+        URL = f"https://www.aliexpress.com/w/wholesale-sun-cream.html?SearchText=sun+cream&catId=0&g=y&initiative_id=SB_20230712111033&spm=a2g0o.best.1000002.0&trafficChannel=af&page={i}"
         # HTTP Request
         webpage = requests.get(URL, headers=HEADERS)
 
@@ -102,25 +110,24 @@ if __name__ == '__main__':
         soup = BeautifulSoup(webpage.content, "html.parser")
 
         # Fetch links as List of Tag Objects
-        links = soup.find_all("a", attrs={'class':'a-link-normal s-no-outline'})
+        links = soup.find_all("a", attrs={'class':'manhattan--container--1lP57Ag cards--gallery--2o6yJVt search-card-item'})
         
         # Store the links
         links_list = []
+        
         # Loop for extracting links from Tag Objects
         for link in links:
-                links_list.append(link.get('href'))
-                print(link.get('href'))
-                
-                
+                links_list.append(get_href(link))
 
-        
-        
         # Loop for extracting product details from each link 
         for link in links_list:
         
-            new_webpage = requests.get("https://www.amazon.com" + link, headers=HEADERS)
+            new_webpage = requests.get("https://www.aliexpress.com" + link, headers=HEADERS)
+
 
             new_soup = BeautifulSoup(new_webpage.content, "html.parser")
+            print(new_soup)
+            """
             # Function calls to display all necessary product information
             d['title'].append(get_title(new_soup))
             print("done")
@@ -136,9 +143,9 @@ if __name__ == '__main__':
             print("done")
             d['image_url'].append(get_image_url(new_soup))
             print("done")
-            print("watch" + str(i) + "done")
+            print("sun cream" + str(i) + "done")
             i+=1
-            if i>6:
+            if i>35:
                 print(d)
                 i = 0
                 break
@@ -151,12 +158,12 @@ if __name__ == '__main__':
     amazon_df['title'].replace('', np.nan, inplace=True)
     amazon_df = amazon_df.dropna(subset=['title'])
     #save to csv
-    amazon_df.to_csv("amazon_watch.csv", header=True, index=False)
+    amazon_df.to_csv("amazon_sunCream.csv", header=True, index=False)
     if(amazon_df.empty):
         print("empty")
     else:
         #READ CSV
-        df = pd.read_csv('amazon_watch.csv')
+        df = pd.read_csv('amazon_sunCream.csv')
         #remove white space from column names
         df.columns = df.columns.str.strip()
         #create database
@@ -165,4 +172,4 @@ if __name__ == '__main__':
         df.to_sql("amazon_data", conn, if_exists='append')
         #close connection
         conn.close()
-        
+        """
